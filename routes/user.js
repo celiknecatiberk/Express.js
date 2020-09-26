@@ -2,8 +2,19 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");                   
 
-router.get("/",(req, res, next) => {       
-res.sendFile(path.join(__dirname, "../", "views", "/index.html"));            
+const admin = require("./admin");       
+
+router.get("/",(req, res, next) => {  
+
+      
+    res.render("index", 
+    {
+        title : "Homepage", 
+        prds: admin.products,
+        path : "/"      
+    
+    });       
+
 });
 
 module.exports = router;   

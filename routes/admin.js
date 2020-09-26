@@ -1,16 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path"); 
 
+const products = [
+    {name : "Samsung S8", price : 3000, image: "1.jpg" , description: "Samsung Akıllı Telefon"},
+    {name : "Samsung S7", price : 3000, image: "2.jpg" , description: "Samsung Akıllı Telefon"},
+    {name : "Samsung S9", price : 3000, image: "3.jpg" , description: "Samsung Akıllı Telefon"},
+    {name : "Iphone 7S", price : 5000, image: "4.jpg" , description: "Apple Akıllı Telefon"}
+]
 
 router.get("/add-product", (req, res, next) => {        
-    res.sendFile(path.join(__dirname, "../", "views", "/add-product.html"));            
+    res.render("add-product", 
+    {
+        title : "Add a new product",
+        path : "/admin/add-product"    
+    });      
 });
 
 
 router.post("/add-product", (req, res, next) =>{          
-    console.log(req.body);      
+    products.push({name : req.body.name, price : req.body.price, image : req.body.image, description : req.body.description}); 
     res.redirect("/");          
 });
 
-module.exports = router;    
+exports.routes = router;              
+exports.products = products;    
