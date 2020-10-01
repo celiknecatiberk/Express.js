@@ -1,61 +1,77 @@
-const Product = require("../models/product");
+const Product = require('../models/product');
+const Category = require('../models/category');
 
-module.exports.getIndex = (req, res, next) => {   
-
+exports.getIndex = (req, res, next) => {        
     const products = Product.getAll();
-    res.render("shop/index",            
-        {
-            title: "Shoopping",
-            products: products,                 
-            path: "/"
-        });
+    const categories = Category.getAll();
+
+    res.render('shop/index', {                 
+        title: 'Shopping',
+        products: products,                     
+        categories: categories,
+        path: '/'
+    });
 }
 
-module.exports.getProducts = (req, res, next) => {  
+exports.getProducts = (req, res, next) => {       
     const products = Product.getAll();
-    res.render("shop/products",             
-        {
-            title: "Products",
-            products: products,     
-            path: "/products"
+    const categories = Category.getAll();
 
-        });
+    res.render('shop/products', {               
+        title: 'Products',
+        products: products,
+        categories: categories,
+        path: '/products'
+    });
 }
 
-module.exports.getProduct = (req, res, next) => {        
-    const product = Product.getById(req.params.productid);          
+exports.getProductsByCategoryId = (req, res, next) => {
+    const categoryid = req.params.categoryid;
+    const products = Product.getProductsByCategoryId(categoryid);
+    const categories = Category.getAll();
 
-    res.render("shop/product-detail", {
-        title : product.name,
-        product : product,
-        path : "/products"
+    res.render('shop/products', {
+        title: 'Products',
+        products: products,
+        categories: categories,
+        selectedCategory: categoryid,                           
+        path: '/products'   
     });
 }
 
 
-module.exports.getProductDetails = (req, res, next) => {   
-    res.render("shop/details",
-        {
-            title: "Details",
-            path: "/details"
-        });
+
+
+exports.getProduct = (req, res, next) => {
+    const product = Product.getById(req.params.productid);      
+
+    res.render('shop/product-detail', {
+        title: product.name,
+        product: product,
+        path: '/products'
+    });
 }
 
-module.exports.getCart = (req, res, next) => {   
-    res.render("shop/cart",
-        {
-            title: "Cart",
-            path: "/cart"
-        });
+
+exports.getProductDetails = (req, res, next) => {
+    res.render('shop/details', {
+        title: 'Details',
+        path: '/details'
+    });
 }
 
-module.exports.getOrders = (req, res, next) => {   
-    res.render("shop/orders",
-        {
-            title: "Orders",
-            path: "/orders"
-        });
+exports.getCart = (req, res, next) => {
+    res.render('shop/cart', {
+        title: 'Cart',
+        path: '/cart'
+    });
 }
 
+exports.getOrders = (req, res, next) => {
+    res.render('shop/orders', {
+        title: 'Orders',
+        path: '/orders'
+    });
+}
 
 
