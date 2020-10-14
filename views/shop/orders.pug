@@ -6,7 +6,7 @@ block content
         each order in orders
             .card.mb-5
                 .card-header
-                    h3 Order id: ##{order.id}
+                    h3 order id: ##{order._id}
                 table.table
                     thead
                         tr
@@ -15,21 +15,22 @@ block content
                             th Price
                             th Quantity
                     tbody
-                        each product in order.products
+                        each item in order.items
                             tr
                                 td
-                                    img(src=`/img/${product.imageUrl}` width="80")
-                                td #{product.name}
-                                td #{product.orderItem.quantity}
-                                td #{product.orderItem.price}
+                                    img(src=`/img/${item.product.imageUrl}` width="80")
+                                td #{item.product.name}
+                                td #{item.product.price}
+                                td #{item.quantity}
                     tfoot
                         tr
-                            td(colspan="2") #{order.createdAt.toDateString()}
+                            td(colspan="2") #{order.date}
                             td
                             - var total = 0;
-                            each product in order.products
-                                - total += (product.price * product.orderItem.quantity)
-                            td  #{total} TL
+                            each item in order.items
+                                - total += (item.product.price * item.quantity)
+                            td  #{total} TL               
+
 
     else
         h1 No Orders

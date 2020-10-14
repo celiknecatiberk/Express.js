@@ -10,22 +10,18 @@ app.set('views', './views');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/shop');
 
-const errorController = require('./controllers/errors');
-const sequelize = require("./utility/database");
+const mongoose = require("mongoose");
 
-const Category = require('./models/category');
-const Product = require('./models/product');
-const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cartItem');
-const Order = require('./models/order');
-const OrderItem = require('./models/orderItem');
+const errorController = require('./controllers/errors');
+
+const User = require("./models/user");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use((req, res, next) => {
-    User.findByPk(1)
+    User.findOne({name : "necatiberk"})
         .then(user => {
             req.user = user;
             next();
@@ -33,7 +29,7 @@ app.use((req, res, next) => {
         .catch(err => {
             console.log(err);
         })
-});
+})
 
 // routes
 app.use('/admin', adminRoutes);
@@ -41,71 +37,35 @@ app.use(userRoutes);
 
 app.use(errorController.get404Page);
 
-Product.belongsTo(Category, {           
-    foreignKey: {
-        allowNull: false               
-    }
-});
-Category.hasMany(Product);
-
-
-Product.belongsTo(User);                       
-User.hasMany(Product);                         
-
-User.hasOne(Cart);                              
-Cart.belongsTo(User);
-
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-
-Order.belongsTo(User);                         
-User.hasMany(Order);                            
-
-Order.belongsToMany(Product, { through: OrderItem });
-Product.belongsToMany(Order, { through: OrderItem });       
-
-let _user;
-sequelize                              
-    //.sync({ force: true })                                 
-    .sync()
+mongoose.connect("mongodb+srv://necatiberkcelik:JMJ4cXbV22mQLJ9@cluster0.r092k.mongodb.net/node-app?retryWrites=true&w=majority")
     .then(() => {
+        console.log('connected to mongodb');
 
-        User.findByPk(1)
-            .then(user => {
-                if (!user) {                     
-                    return User.create({ name: "necatiberkcelik", email: "celiknecatiberk@gmail.com" });
-                }
-                return user;
-            }).then(user => {
-                _user = user;
-                return user.getCart();
-            }).then(cart => {
-                if (!cart) {         
-                    return _user.createCart();
-                }
-                return cart;
-            }).then(() => {
-                Category.count()
-                    .then(count => {
-                        if (count === 0) {
-                            Category.bulkCreate([
-                                { name: 'Telefon', description: 'telefon kategorisi' },
-                                { name: 'Bilgisayar', description: 'bilgisayar kategorisi' },
-                                { name: 'Elektronik', description: 'elektronik kategorisi' }
-                            ]);
-                        }
-                    });
-            });
+        User.findOne( { name : "necatiberk"})
+        .then(user => {                
+            if (!user) {          
+                user = new User({
+                    name : "necatiberk",
+                    email: "email@necatiberkcelik.com",
+                    cart : {
+                        items : []
+                    }
+                })
+                 return user.save();
+            }
+            return user;              
+        })
+        .then(user => {
+            console.log(user);
+            app.listen(3000);          
+        })
+        .catch(err => {
+            console.log(err);
+        })
     })
     .catch(err => {
         console.log(err);
-    });
-
-app.listen(3000, () => {
-    console.log('listening on port 3000');
-});
-
-
+    })
 
 
 

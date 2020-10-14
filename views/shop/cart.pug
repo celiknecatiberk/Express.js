@@ -20,24 +20,24 @@ block content
                 each product in products
                     tr
                         td
-                            img(src=`/img/${product.imageUrl}` width='80')
-                        td #{product.name}
-                        td #{product.price} TL
-                        td #{product.cartItem.quantity} 
+                            img(src=`/img/${product.productId.imageUrl}` width='80')
+                        td #{product.productId.name}
+                        td #{product.productId.price} TL
+                        td #{product.quantity} 
                         td            
                             form(action='/delete-cartitem' method='POST')
-                                input(type='hidden' name='productid' value=`${product.id}`)
+                                input(type='hidden' name='productid' value=`${product.productId._id}`)
                                 button(type='submit').btn.btn-danger.btn-sm Delete
             tfoot   
                 td(colspan="4") 
                     - var total = 0;
                     each product in products
-                        -total += (product.price * product.cartItem.quantity)
+                        -total += (product.productId.price * product.quantity)
                 td #{total} TL
 
-        .text-center    
-            a(href="/").btn.btn-warning Alışverişe Devam Et        
+        .text-right    
+            a(href="/").btn.btn-success Alışverişe Devam Et        
             form(action="/create-order" method="POST")
-                button(type="submit").btn.btn-success.ml-2 Alışverişi Tamamla   
+                button(type="submit").btn.btn-primary.ml-2 Alışverişi Tamamla   
     else
         h1 No Products                        
